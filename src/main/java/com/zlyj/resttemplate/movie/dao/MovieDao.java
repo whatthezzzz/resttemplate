@@ -58,11 +58,6 @@ public class MovieDao {
 
     }
 
-
-
-
-
-
     /**
      * 更新对象
      */

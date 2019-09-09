@@ -3,6 +3,7 @@ package com.zlyj.resttemplate.movie.controller;
 import com.zlyj.resttemplate.movie.config.Media;
 import com.zlyj.resttemplate.movie.config.Artist;
 import com.zlyj.resttemplate.movie.config.Tag;
+import com.zlyj.resttemplate.movie.dao.MovieDao;
 import com.zlyj.resttemplate.movie.entity.Movie;
 import com.zlyj.resttemplate.movie.service.MovieService;
 import org.json.JSONArray;
@@ -11,6 +12,7 @@ import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.*;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.LinkedMultiValueMap;
@@ -31,6 +33,11 @@ public class MovieController {
 @Autowired
 private MovieService movieService;
 
+//@Autowired
+//private MovieDao movieDao;
+
+
+
     private static final Logger logger = LoggerFactory.getLogger(MovieController.class);
 
     RestTemplate template = new RestTemplate();
@@ -46,9 +53,9 @@ private MovieService movieService;
         Movie movie = new Movie();
             movie.setDetailsId(detailsId);
 
-            String url = "http://api.douban.com/v2/movie/" + movie.getDetailsId();
+            String url = "http://api.douban.com/v2/movie/"+detailsId;
 
-            String url2 = "http://api.douban.com/v2/movie/subject/" + movie.getDetailsId();
+            String url2 = "http://api.douban.com/v2/movie/subject/" + detailsId;
 
             MultiValueMap<String, Object> paramMap = new LinkedMultiValueMap<String, Object>();
 
