@@ -3,10 +3,12 @@ package com.zlyj.resttemplate.movie.dao;
 import com.zlyj.resttemplate.movie.entity.Movie;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.data.mongodb.core.query.Criteria;
-import org.springframework.data.mongodb.core.query.Query;
-import org.springframework.data.mongodb.core.query.Update;
+import org.springframework.data.mongodb.core.query.*;
 import org.springframework.stereotype.Repository;
+import org.springframework.util.CollectionUtils;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Repository
 public class MovieDao {
@@ -35,15 +37,42 @@ public class MovieDao {
     }
 
     /**
+     * 单条查询
+     * @param detailsId
+     * @return
+     */
+    public Movie findMovieDetailsSource(String detailsId){
+
+        List<String>fields = new ArrayList<>();
+
+        Query query = new Query(Criteria.where("detailsId").is(detailsId));
+
+        Field findFields = query.fields().include("detailsSource");
+
+        if (!CollectionUtils.isEmpty(fields)) {
+            fields.forEach(findFields::include);
+        }
+
+        return mongoTemplate.findOne(query,Movie.class);
+
+
+    }
+
+
+
+
+
+
+    /**
      * 更新对象
      */
     public void updateTest(Movie movie) {
 
         Query query=new Query(Criteria.where("detailsId").is(movie.getDetailsId()));
-        Update update= new Update().set("casts", movie.getCasts()).set("title",movie.getTitle() ).set("summary",movie.getSummary()).set("rating",movie.getRating()).set("year",movie.getYear()).set("genres",movie.getGenres()).set("directors",movie.getDirectors()).set("trailerType",movie.getTrailerType()).set("countries",movie.getCountries()).set("tags",movie.getTags());
+        Update update= new Update().set("casts", movie.getCasts()).set("title",movie.getTitle() ).set("summary",movie.getSummary()).set("rating",movie.getRating()).set("year",movie.getYear()).set("genres",movie.getGenres()).set("directors",movie.getDirectors()).set("trailerType",movie.getTrailerType()).set("countries",movie.getCountries()).set("tags",movie.getTags()).set("mediaType",movie.getMedia()).set("trailerType",movie.getTrailerType());
         //更新查询返回结果集的第一条
         mongoTemplate.updateFirst(query,update,Movie.class);
         //更新查询返回结果集的所有
-        // mongoTemplate.updateMulti(query,update,TestEntity.class);
+        // mongoTemplate.updateMulti(query,update,Movie.class);
     }
 }

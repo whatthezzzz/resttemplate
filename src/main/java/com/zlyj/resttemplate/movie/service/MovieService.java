@@ -41,4 +41,12 @@ public class MovieService {
         movieDao.updateTest(movie);
     }
 
+
+    /**
+     * 取detailsSource
+     * @return
+     */
+    public Movie findMovieDetailsSource(String detailsId){
+        return movieDao.findMovieDetailsSource(detailsId);
+    }
 }

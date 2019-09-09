@@ -2,9 +2,9 @@ package com.zlyj.resttemplate.movie.entity;
 
 import com.digidite.common.entity.BaseMongoEntity;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.zlyj.resttemplate.movie.config.Media;
 import lombok.Data;
 import org.springframework.data.mongodb.core.mapping.Document;
-import org.springframework.http.MediaType;
 
 
 import javax.validation.constraints.NotNull;
@@ -68,7 +68,7 @@ public class Movie extends BaseMongoEntity {
          *
          */
         @NotNull
-        MediaType mediaType;
+        Media media;
 
         /**
          * 1 - 正片

@@ -1,12 +1,10 @@
 package com.zlyj.resttemplate.movie.controller;
 
-
-
+import com.zlyj.resttemplate.movie.config.Media;
 import com.zlyj.resttemplate.movie.config.Artist;
 import com.zlyj.resttemplate.movie.config.Tag;
 import com.zlyj.resttemplate.movie.entity.Movie;
 import com.zlyj.resttemplate.movie.service.MovieService;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -41,7 +39,7 @@ private MovieService movieService;
      * 更新
      * @return
      */
-    @RequestMapping(value = "/doPost", method = RequestMethod.POST)
+    @RequestMapping(value = "/update", method = RequestMethod.POST)
     public void doPost3(String detailsId,String apikey,HttpServletResponse response) {
         response.setCharacterEncoding("UTF-8");
         response.setContentType("text/html;charset=UTF-8");
@@ -49,6 +47,8 @@ private MovieService movieService;
             movie.setDetailsId(detailsId);
 
             String url = "http://api.douban.com/v2/movie/" + movie.getDetailsId();
+
+            String url2 = "http://api.douban.com/v2/movie/subject/" + movie.getDetailsId();
 
             MultiValueMap<String, Object> paramMap = new LinkedMultiValueMap<String, Object>();
 
@@ -67,29 +67,53 @@ private MovieService movieService;
 
             ResponseEntity<String> entity = template.postForEntity(url, request, String.class);
 
+            ResponseEntity<String>entity2 = template.postForEntity(url2,request,String.class);
+
             String res = entity.getBody();
+
+            String res2 = entity2.getBody();
             try{
                 JSONObject jsonObject = new JSONObject(JSONTokener(res));
 
+                JSONObject jsonObject2 = new JSONObject(JSONTokener(res2));
+
+                JSONArray year = (JSONArray) jsonObject.getJSONObject("attrs").get("year");
+
+                Integer detailsSource = movieService.findMovieBydetailsId(detailsId).getDetailsSource();
+
+                if(!arry(year).equals("2019")||arry(year).isEmpty()||null == arry(year)||detailsSource != 1) {
+                    logger.error("NOT FOUND ON 2019 DOUBAN");
+                    return;
+                }
+
                 Double rating = Double.valueOf(String.valueOf(jsonObject.getJSONObject("rating").get("average")));
                 JSONArray cast = (JSONArray) jsonObject.getJSONObject("attrs").get("cast");
-                String title = String.valueOf(jsonObject.get("alt_title"));
-                String summary = String.valueOf(jsonObject.get("summary"));
-                JSONArray year = (JSONArray) jsonObject.getJSONObject("attrs").get("year");
                 JSONArray directors = (JSONArray) jsonObject.getJSONObject("attrs").get("director");
                 JSONArray genres = (JSONArray) jsonObject.getJSONObject("attrs").get("movie_type");
                 JSONArray country = (JSONArray) jsonObject.getJSONObject("attrs").get("country");
                 String tags = String.valueOf(jsonObject.getJSONArray("tags"));
+                String mediaType = String.valueOf(jsonObject2.get("subtype"));
+                String title = String.valueOf(jsonObject.get("alt_title"));
+                String summary = String.valueOf(jsonObject.get("summary"));
 
                 movie.setTags(merge(tags));
-                movie.setCountries(String.join("|",arry(country)));
-                movie.setGenres(String.join("|",arry(genres)));
-                movie.setDirectors(String.join("|",arry(directors)));
+                movie.setCountries(arry(country));
+                movie.setGenres(arry(genres));
+                movie.setDirectors(arry(directors));
                 movie.setRating(rating);
-                movie.setCasts(String.join("|",arry(cast)));
+                movie.setCasts(arry(cast));
                 movie.setSummary(summary);
                 movie.setTitle(title);
-                movie.setYear(String.join("|",arry(year)));
+                movie.setYear(arry(year));
+                movie.setTrailerType(1);
+
+                if("movie".equals(mediaType)){
+                    movie.setMedia(Media.movie);
+                } else if(movie.getTags().contains("综艺")||movie.getTags().contains("真人秀")) {
+                    movie.setMedia(Media.show);
+                } else {
+                    movie.setMedia(Media.series);
+                }
 
                 movieService.UpdateMovie(movie);
 
@@ -98,14 +122,15 @@ private MovieService movieService;
             }
     }
 
-    private static List<String> arry(JSONArray array1) throws JSONException {
+    private static String arry(JSONArray array1) throws JSONException {
         String array2;
         List<String>list = new ArrayList<>();
         for (int i = 0; i < array1.length(); i++) {
             array2 = (String) array1.get(i);
             list.add(array2);
         }
-        return list;
+        String array3 = String.join("|",list);
+        return array3;
     }
 
     private static  String JSONTokener(String in) {
@@ -117,10 +142,9 @@ private MovieService movieService;
 
     public static String merge(String array1) {
 
-        com.alibaba.fastjson.JSONArray jsonarray = com.alibaba.fastjson.JSONArray.parseArray(array1);
+       com.alibaba.fastjson.JSONArray jsonarray = com.alibaba.fastjson.JSONArray.parseArray(array1);
 
         List<Tag> tags = com.alibaba.fastjson.JSONObject.parseArray(jsonarray.toJSONString(), Tag.class);
-
 
         if(tags==null|| tags.isEmpty()) {
             return "";
@@ -144,13 +168,6 @@ private MovieService movieService;
         return s.substring(0,s.length()-1);
     }
 
-
-
-//                if(!year.equals("2019")||year.isEmpty()||null == year) {
-//                    logger.error("year errro");
-//                    return;
-//                }
-//
 
 
 //            MongoClient mongoClient = new MongoClient("localhost", 27017);
