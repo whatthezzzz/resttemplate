@@ -38,20 +38,21 @@ public class ResttemplateApplicationTests {
 
     @Test
     public void jsonarraytest() throws JSONException {
-        String str = "{\"errors\":[{\"sample_link\":\"http:\\/\\/www.iqiyi.com\\/v_19rt88sfpk.html?vfm=m_331_dbdy&fv=4904d94982104144a1548dd9040df241\",\"need_pay\":true,\"source\":{\"name\":\"爱奇艺视频\",\"pic\":\"https:\\/\\/img3.doubanio.com\\/f\\/movie\\/7c9e516e02c6fe445b6559c0dd2a705e8b17d1c9\\/pics\\/movie\\/video-iqiyi.png\",\"literal\":\"iqiyi\"},\"video_id\":\"19rt88sfpk\"},{\"sample_link\":\"http:\\/\\/v.qq.com\\/x\\/cover\\/v2098lbuihuqs11.html?ptag=douban.movie\",\"need_pay\":true,\"source\":{\"name\":\"腾讯视频\",\"pic\":\"https:\\/\\/img3.doubanio.com\\/f\\/movie\\/0a74f4379607fa731489d7f34daa545df9481fa0\\/pics\\/movie\\/video-qq.png\",\"literal\":\"qq\"},\"video_id\":\"v2098lbuihuqs11\"},{\"sample_link\":\"http:\\/\\/v.youku.com\\/v_show\\/id_XNDMwMjk5OTU2MA==.html?tpa=dW5pb25faWQ9MzAwMDA4XzEwMDAwMl8wMl8wMQ&refer=esfhz_operation.xuka.xj_00003036_000000_FNZfau_19010900\",\"need_pay\":true,\"source\":{\"name\":\"优酷视频\",\"pic\":\"https:\\/\\/img1.doubanio.com\\/f\\/movie\\/886b26a83d18bc60de4ee1daac38145f03c88792\\/pics\\/movie\\/video-youku.png\",\"literal\":\"youku\"},\"video_id\":\"XNDMwMjk5OTU2MA==\"},{\"sample_link\":\"http:\\/\\/film.sohu.com\\/album\\/9569532.html\",\"need_pay\":true,\"source\":{\"name\":\"搜狐视频\",\"pic\":\"https:\\/\\/img1.doubanio.com\\/f\\/movie\\/77358cffb08eb6750a0880136f0575c9e7e9a749\\/pics\\/movie\\/video-sohu.png\",\"literal\":\"sohu\"},\"video_id\":\"5615522\"}]}";
-        //获取jsonobject对象
-        JSONObject jsonObject = JSON.parseObject(str);
-        //把对象转换成jsonArray数组
-        JSONArray error = jsonObject.getJSONArray("errors");
-        //error==>[{"code":"UUM70004","message":"组织单元名称不能为空","data":{"id":"254","suborderNo":"SUB_2018062797348039","organUnitType":"部门","action":"add","parent":"10000","ordinal":0,"organUnitFullName":"组织单元全称"},"success":false},{"code":"UUM70004","message":"组织单元名称不能为空","data":{"id":"255","suborderNo":"SUB_2018062797348039","organUnitType":"部门","action":"add","parent":"10000","ordinal":0,"organUnitFullName":"组织单元全称"},"success":false}]
-        //将数组转换成字符串
-        String jsonString = JSONObject.toJSONString(error);//将array数组转换成字符串
-        //将字符串转成list集合
-        List<Videos>  errors = JSONObject.parseArray(jsonString, Videos.class);//把字符串转换成集合
-        for (Videos e: errors) {
+        String str = "[{\"sample_link\":\"http:\\/\\/www.iqiyi.com\\/v_19rt88sfpk.html?vfm=m_331_dbdy&fv=4904d94982104144a1548dd9040df241\",\"need_pay\":true,\"source\":{\"name\":\"爱奇艺视频\",\"pic\":\"https:\\/\\/img3.doubanio.com\\/f\\/movie\\/7c9e516e02c6fe445b6559c0dd2a705e8b17d1c9\\/pics\\/movie\\/video-iqiyi.png\",\"literal\":\"iqiyi\"},\"video_id\":\"19rt88sfpk\"},{\"sample_link\":\"http:\\/\\/v.qq.com\\/x\\/cover\\/v2098lbuihuqs11.html?ptag=douban.movie\",\"need_pay\":true,\"source\":{\"name\":\"腾讯视频\",\"pic\":\"https:\\/\\/img3.doubanio.com\\/f\\/movie\\/0a74f4379607fa731489d7f34daa545df9481fa0\\/pics\\/movie\\/video-qq.png\",\"literal\":\"qq\"},\"video_id\":\"v2098lbuihuqs11\"},{\"sample_link\":\"http:\\/\\/v.youku.com\\/v_show\\/id_XNDMwMjk5OTU2MA==.html?tpa=dW5pb25faWQ9MzAwMDA4XzEwMDAwMl8wMl8wMQ&refer=esfhz_operation.xuka.xj_00003036_000000_FNZfau_19010900\",\"need_pay\":true,\"source\":{\"name\":\"优酷视频\",\"pic\":\"https:\\/\\/img1.doubanio.com\\/f\\/movie\\/886b26a83d18bc60de4ee1daac38145f03c88792\\/pics\\/movie\\/video-youku.png\",\"literal\":\"youku\"},\"video_id\":\"XNDMwMjk5OTU2MA==\"},{\"sample_link\":\"http:\\/\\/film.sohu.com\\/album\\/9569532.html\",\"need_pay\":true,\"source\":{\"name\":\"搜狐视频\",\"pic\":\"https:\\/\\/img1.doubanio.com\\/f\\/movie\\/77358cffb08eb6750a0880136f0575c9e7e9a749\\/pics\\/movie\\/video-sohu.png\",\"literal\":\"sohu\"},\"video_id\":\"5615522\"}]";
+//        //获取jsonobject对象
+//        JSONObject jsonObject = JSON.parseObject(str);
+//        //把对象转换成jsonArray数组
+//        JSONArray error = jsonObject.getJSONArray("errors");
+//        //error==>[{"code":"UUM70004","message":"组织单元名称不能为空","data":{"id":"254","suborderNo":"SUB_2018062797348039","organUnitType":"部门","action":"add","parent":"10000","ordinal":0,"organUnitFullName":"组织单元全称"},"success":false},{"code":"UUM70004","message":"组织单元名称不能为空","data":{"id":"255","suborderNo":"SUB_2018062797348039","organUnitType":"部门","action":"add","parent":"10000","ordinal":0,"organUnitFullName":"组织单元全称"},"success":false}]
+//        //将数组转换成字符串
+//        String jsonString = JSONObject.toJSONString(error);//将array数组转换成字符串
+//        //将字符串转成list集合
+//        logger.info(jsonString);
+        List<Videos>  videos = JSONObject.parseArray(str, Videos.class);//把字符串转换成集合
+        for (Videos v: videos) {
             //Error的属性
-            System.out.println("另一种数组转换Error属性="+e.getVideo_id());
-            List<Source> s = e.getSource();
+            System.out.println("另一种数组转换Error属性="+v.getVideo_id());
+            List<Source> s = v.getSource();
             for (Source source: s) {
                 System.out.println("data对象属性="+source.getLiteral());
                 System.out.println("data对象属性="+source.getName());
