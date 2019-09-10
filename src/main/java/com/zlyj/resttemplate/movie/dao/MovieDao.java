@@ -64,7 +64,7 @@ public class MovieDao {
     public void updateTest(Movie movie) {
 
         Query query=new Query(Criteria.where("detailsId").is(movie.getDetailsId()));
-        Update update= new Update().set("casts", movie.getCasts()).set("title",movie.getTitle() ).set("summary",movie.getSummary()).set("rating",movie.getRating()).set("year",movie.getYear()).set("genres",movie.getGenres()).set("directors",movie.getDirectors()).set("trailerType",movie.getTrailerType()).set("countries",movie.getCountries()).set("tags",movie.getTags()).set("mediaType",movie.getMedia()).set("trailerType",movie.getTrailerType());
+        Update update= new Update().set("casts", movie.getCasts()).set("title",movie.getTitle() ).set("summary",movie.getSummary()).set("rating",movie.getRating()).set("year",movie.getYear()).set("genres",movie.getGenres()).set("directors",movie.getDirectors()).set("trailerType",movie.getTrailerType()).set("countries",movie.getCountries()).set("tags",movie.getTags()).set("mediaType",movie.getMedia()).set("trailerType",movie.getTrailerType()).set("providerAssets",movie.getProviderAssets());
         //更新查询返回结果集的第一条
         mongoTemplate.updateFirst(query,update,Movie.class);
         //更新查询返回结果集的所有

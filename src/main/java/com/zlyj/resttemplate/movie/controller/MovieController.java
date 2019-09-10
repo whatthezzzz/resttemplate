@@ -3,7 +3,7 @@ package com.zlyj.resttemplate.movie.controller;
 import com.zlyj.resttemplate.movie.config.Media;
 import com.zlyj.resttemplate.movie.config.Artist;
 import com.zlyj.resttemplate.movie.config.Tag;
-import com.zlyj.resttemplate.movie.dao.MovieDao;
+import com.zlyj.resttemplate.movie.config.Videos;
 import com.zlyj.resttemplate.movie.entity.Movie;
 import com.zlyj.resttemplate.movie.service.MovieService;
 import org.json.JSONArray;
@@ -12,7 +12,6 @@ import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.http.*;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.LinkedMultiValueMap;
@@ -98,10 +97,13 @@ private MovieService movieService;
                 JSONArray directors = (JSONArray) jsonObject.getJSONObject("attrs").get("director");
                 JSONArray genres = (JSONArray) jsonObject.getJSONObject("attrs").get("movie_type");
                 JSONArray country = (JSONArray) jsonObject.getJSONObject("attrs").get("country");
+                String video = String.valueOf(jsonObject2.getJSONArray("videos"));
                 String tags = String.valueOf(jsonObject.getJSONArray("tags"));
                 String mediaType = String.valueOf(jsonObject2.get("subtype"));
                 String title = String.valueOf(jsonObject.get("alt_title"));
                 String summary = String.valueOf(jsonObject.get("summary"));
+
+
 
                 movie.setTags(merge(tags));
                 movie.setCountries(arry(country));
@@ -146,6 +148,29 @@ private MovieService movieService;
         }
         return in;
     }
+
+
+//    public static List<String> Video(String array1) {
+//
+//        com.alibaba.fastjson.JSONArray jsonarray = com.alibaba.fastjson.JSONArray.parseArray(array1);
+//
+//        List<Videos> video = com.alibaba.fastjson.JSONObject.parseArray(jsonarray.toJSONString(), Videos.class);
+//
+//        if(video==null|| video.isEmpty()) {
+//           return null;
+//        }
+//        List<String> list = new ArrayList<>();
+//        String s = "";
+//        for (Videos videos : video) {
+//            s+= videos.();
+//            list.add(s);
+//
+//        }
+//
+//        return list;
+//    }
+
+
 
     public static String merge(String array1) {
 
