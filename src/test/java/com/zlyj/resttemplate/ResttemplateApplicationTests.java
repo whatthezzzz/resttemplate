@@ -42,17 +42,19 @@ public class ResttemplateApplicationTests {
 //        //获取jsonobject对象
 //        JSONObject jsonObject = JSON.parseObject(str);
 //        //把对象转换成jsonArray数组
-//        JSONArray error = jsonObject.getJSONArray("errors");
+        JSONArray str1 = JSONObject.parseArray(str);
+
+        logger.info(""+str1);
 //        //error==>[{"code":"UUM70004","message":"组织单元名称不能为空","data":{"id":"254","suborderNo":"SUB_2018062797348039","organUnitType":"部门","action":"add","parent":"10000","ordinal":0,"organUnitFullName":"组织单元全称"},"success":false},{"code":"UUM70004","message":"组织单元名称不能为空","data":{"id":"255","suborderNo":"SUB_2018062797348039","organUnitType":"部门","action":"add","parent":"10000","ordinal":0,"organUnitFullName":"组织单元全称"},"success":false}]
 //        //将数组转换成字符串
 //        String jsonString = JSONObject.toJSONString(error);//将array数组转换成字符串
 //        //将字符串转成list集合
 //        logger.info(jsonString);
-        List<Videos>  videos = JSONObject.parseArray(str, Videos.class);//把字符串转换成集合
+        List<Videos> videos = JSONObject.parseArray(str1.toJSONString(), Videos.class);//把字符串转换成集合
         for (Videos v: videos) {
             //Error的属性
             System.out.println("另一种数组转换Error属性="+v.getVideo_id());
-            List<Source> s = v.getSource();
+            List<Source> s =v.getSources();
             for (Source source: s) {
                 System.out.println("data对象属性="+source.getLiteral());
                 System.out.println("data对象属性="+source.getName());
