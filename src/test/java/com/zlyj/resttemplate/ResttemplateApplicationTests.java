@@ -53,12 +53,12 @@ public class ResttemplateApplicationTests {
         List<Videos> videos = JSONObject.parseArray(str1.toJSONString(), Videos.class);//把字符串转换成集合
         for (Videos v: videos) {
             //Error的属性
-            System.out.println("另一种数组转换Error属性="+v.getVideo_id());
+            System.out.println("video_id="+v.getVideo_id());
             List<Source> s =v.getSources();
             for (Source source: s) {
-                System.out.println("data对象属性="+source.getLiteral());
-                System.out.println("data对象属性="+source.getName());
-                System.out.println("data对象属性="+source.getPic());
+                System.out.println("Source对象属性="+source.getLiteral());
+                System.out.println("Source对象属性="+source.getName());
+                System.out.println("Source对象属性="+source.getPic());
             }
         }
 
