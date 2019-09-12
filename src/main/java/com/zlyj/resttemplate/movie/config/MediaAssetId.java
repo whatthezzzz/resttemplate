@@ -1,4 +1,4 @@
-package com.zlyj.resttemplate.movie.entity;
+package com.zlyj.resttemplate.movie.config;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;

@@ -3,11 +3,13 @@ package com.zlyj.resttemplate.movie.entity;
 import com.digidite.common.entity.BaseMongoEntity;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.zlyj.resttemplate.movie.config.Media;
+import com.zlyj.resttemplate.movie.config.MediaAssetId;
 import lombok.Data;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 
 import javax.validation.constraints.NotNull;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -148,6 +150,7 @@ public class Movie extends BaseMongoEntity {
 
         List<MediaAssetId> providerAssets = new LinkedList<>();
 
+        private String lasttime;
 
 }
 

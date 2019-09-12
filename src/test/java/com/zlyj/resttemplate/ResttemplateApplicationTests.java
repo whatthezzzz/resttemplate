@@ -2,11 +2,11 @@ package com.zlyj.resttemplate;
 
 
 import com.alibaba.fastjson.*;
-import com.zlyj.resttemplate.movie.config.Person;
+
 import com.zlyj.resttemplate.movie.config.Source;
 import com.zlyj.resttemplate.movie.config.Tag;
 import com.zlyj.resttemplate.movie.config.Videos;
-import com.zlyj.resttemplate.movie.controller.MovieController;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
@@ -15,6 +15,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.*;
+import java.util.concurrent.Delayed;
+import java.util.concurrent.TimeUnit;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -24,17 +26,24 @@ public class ResttemplateApplicationTests {
 
     private static final Logger logger = LoggerFactory.getLogger(ResttemplateApplicationTests.class);
 
-//    @Test
-//    private static List<String> arry(JSONArray array1) throws JSONException, MalformedURLException, RemoteException {
-//        String array2;
-//        List<String>list = new ArrayList<>();
-//        for (int i = 0; i < array1.length(); i++) {
-//            array2 = (String) array1.get(i);
-//            list.add(array2);
-//            list = Arrays.asList(list(String.join("|", list)));
-//        }
-//        return list;
-//    }
+@Test
+public void emptytest(){
+    String rating ="";
+
+    System.out.println(empty(rating));
+}
+
+
+private static Double empty(String rating){
+    Double average;
+    if (rating.isEmpty()||null == rating){
+        average = Double.valueOf(0);
+    }else{
+        double average1 = Double.parseDouble(rating);
+        return average1;
+    }
+    return average;
+    }
 
     @Test
     public void jsonarraytest() throws JSONException {
@@ -86,9 +95,6 @@ public class ResttemplateApplicationTests {
         }
         List<Source> video = com.alibaba.fastjson.JSONObject.parseArray(jsonarray.toJSONString(), Source.class);
 
-
-
-
         System.out.println(video);
 
         if(video==null|| video.isEmpty()) {
@@ -106,55 +112,48 @@ public class ResttemplateApplicationTests {
         System.out.println(list1);
 
 
-//
-//        String str = "requestid=97&_workflowid=230&_workflowtype=&isovertime=0&preloadkey=1502342729232&_key=oyqdqq&field6322=1317%20&_t=1502340708152";
-//        String[] strs = str.split("&");
-//        Map<String, String> m = new HashMap<String, String>();
-//        for(String s:strs){
-//            String[] ms = s.split("=");
-//            m.put(ms[0], ms[1]);
-//        }
-//
-//        System.out.println(m.toString());
-//        String str = "A_test1,A_test2,B_test3,B_test4";
-//        //第一次分割,分隔符 ','
-//        String[] stepOne = str.split(",");
-//        Map<String,String> map = new HashMap<String,String>();
-//        for(int i = 0; i<stepOne.length; i++)
-//        {
-//            //第二次分割，分隔符'_'
-//            String[] stepTwo = stepOne[i].split("_");
-//            //向HashMap中添加
-//            if(map.get(stepTwo[0])==null)
-//                map.put(stepTwo[0], stepTwo[1]);
-//            else
-//                map.put(stepTwo[0], stepTwo[1]+","+map.get(stepTwo[0]));
-//        }
-//        for(Map.Entry<String, String>entry : map.entrySet())
-//        {
-//            //按格式输出
-//            System.out.println("key={"+entry.getKey()+"} value={"+entry.getValue()+"}");
-//        }
 
-
-
-//        String ww = "[{\"sample_link\":\"http:\\/\\/www.iqiyi.com\\/v_19rt88sfpk.html?vfm=m_331_dbdy&fv=4904d94982104144a1548dd9040df241\",\"need_pay\":true,\"source\":{\"name\":\"爱奇艺视频\",\"pic\":\"https:\\/\\/img3.doubanio.com\\/f\\/movie\\/7c9e516e02c6fe445b6559c0dd2a705e8b17d1c9\\/pics\\/movie\\/video-iqiyi.png\",\"literal\":\"iqiyi\"},\"video_id\":\"19rt88sfpk\"},{\"sample_link\":\"http:\\/\\/v.qq.com\\/x\\/cover\\/v2098lbuihuqs11.html?ptag=douban.movie\",\"need_pay\":true,\"source\":{\"name\":\"腾讯视频\",\"pic\":\"https:\\/\\/img3.doubanio.com\\/f\\/movie\\/0a74f4379607fa731489d7f34daa545df9481fa0\\/pics\\/movie\\/video-qq.png\",\"literal\":\"qq\"},\"video_id\":\"v2098lbuihuqs11\"},{\"sample_link\":\"http:\\/\\/v.youku.com\\/v_show\\/id_XNDMwMjk5OTU2MA==.html?tpa=dW5pb25faWQ9MzAwMDA4XzEwMDAwMl8wMl8wMQ&refer=esfhz_operation.xuka.xj_00003036_000000_FNZfau_19010900\",\"need_pay\":true,\"source\":{\"name\":\"优酷视频\",\"pic\":\"https:\\/\\/img1.doubanio.com\\/f\\/movie\\/886b26a83d18bc60de4ee1daac38145f03c88792\\/pics\\/movie\\/video-youku.png\",\"literal\":\"youku\"},\"video_id\":\"XNDMwMjk5OTU2MA==\"},{\"sample_link\":\"http:\\/\\/film.sohu.com\\/album\\/9569532.html\",\"need_pay\":true,\"source\":{\"name\":\"搜狐视频\",\"pic\":\"https:\\/\\/img1.doubanio.com\\/f\\/movie\\/77358cffb08eb6750a0880136f0575c9e7e9a749\\/pics\\/movie\\/video-sohu.png\",\"literal\":\"sohu\"},\"video_id\":\"5615522\"}]";
-//        JSONArray json = JSONArray.parseArray(ww); // 首先把字符串转成 JSONArray 对象
-//        if(json.size()>0){
-//            for(int i=0;i<json.size();i++){// 遍历 jsonarray 数组，把每一个对象转成 json 对象
-//                JSONObject job = json.getJSONObject(i);
-//                JSONArray blow = job.get("source");
-//                for (int j =0 ; j<blow.size();j++){
-//                  JSONObject literal = blow.getJSONObject(j);
-//                  System.out.println(literal.get("literal")+"=");
-//                }
-
-//               for (int j=0;j<job.size();j++){
-//                   JSONObject blow = job.getJSONObject(String.valueOf(j));
-//                   System.out.println(blow.get("literal")+"=");// 得到 每个对象中的属性值
-//               }
             }
-        }
+
+//    @Test
+//    public class Message implements Delayed {
+//        private int id;
+//        private String body; // 消息内容
+//        private long excuteTime;// 延迟时长，这个是必须的属性因为要按照这个判断延时时长。
+//
+//        public int getId() {
+//            return id;
+//        }
+//
+//        public String getBody() {
+//            return body;
+//        }
+//
+//        public long getExcuteTime() {
+//            return excuteTime;
+//        }
+//
+//        public Message(int id, String body, long delayTime) {
+//            this.id = id;
+//            this.body = body;
+//            this.excuteTime = TimeUnit.NANOSECONDS.convert(delayTime, TimeUnit.MILLISECONDS) + System.nanoTime();
+//        }
+//
+//        // 自定义实现比较方法返回 1 0 -1三个参数
+//        @Override
+//        public int compareTo(Delayed delayed) {
+//            Message msg = (Message) delayed;
+//            return Integer.valueOf(this.id) > Integer.valueOf(msg.id) ? 1
+//                    : (Integer.valueOf(this.id) < Integer.valueOf(msg.id) ? -1 : 0);
+//        }
+//
+//        // 延迟任务是否到时就是按照这个方法判断如果返回的是负数则说明到期否则还没到期
+//        @Override
+//        public long getDelay(TimeUnit unit) {
+//            return unit.convert(this.excuteTime - System.nanoTime(), TimeUnit.NANOSECONDS);
+//        }
+//    }
+}
 
 
 
