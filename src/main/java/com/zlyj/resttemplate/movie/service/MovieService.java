@@ -67,11 +67,11 @@ public class MovieService {
      * @return
      */
     public void UpdateMovie(String apikey,HttpServletResponse response) {
-//        List<DetailsId>list = movieDao.findAllDetailsId();
-//
-//        for(DetailsId d:list) {
-//            String detailsId = d.getDetailsId();
-            String detailsId = "26100958";
+        List<DetailsId>list = movieDao.findAllDetailsId();
+
+        for(DetailsId d:list) {
+            String detailsId = d.getDetailsId();
+//            String detailsId = "2144638";
 
             response.setCharacterEncoding("UTF-8");
             response.setContentType("text/html;charset=UTF-8");
@@ -116,20 +116,18 @@ public class MovieService {
 //                    logger.error("NOT FOUND ON 2019 DOUBAN");
 //                    return;
 //                }
-                if(1 == detailsSource) {
-                    JSONArray cast = (JSONArray) jsonObject.getJSONObject("attrs").get("cast");
-                    JSONArray directors = (JSONArray) jsonObject.getJSONObject("attrs").get("director");
-//                    String genres = String.valueOf(jsonObject.getJSONObject("attrs").get("movie_type"));
-                    JSONArray genres = (JSONArray)jsonObject.getJSONObject("attrs").get("movie_type");
-                    JSONArray country = (JSONArray) jsonObject.getJSONObject("attrs").get("country");
+                if (1 == detailsSource) {
+                    JSONArray cast = (JSONArray) jsonObject.getJSONObject("attrs").opt("cast");
+                    JSONArray directors = (JSONArray) jsonObject.getJSONObject("attrs").opt("director");
+                    JSONArray genres = (JSONArray) jsonObject.getJSONObject("attrs").opt("movie_type");
+                    JSONArray country = (JSONArray) jsonObject.getJSONObject("attrs").opt("country");
                     String video = String.valueOf(jsonObject2.getJSONArray("videos"));
                     String tags = String.valueOf(jsonObject.getJSONArray("tags"));
                     String mediaType = String.valueOf(jsonObject2.get("subtype"));
-                    String title = String.valueOf(jsonObject.get("alt_title"));
+                    String title = String.valueOf(jsonObject2.get("title"));
                     String summary = String.valueOf(jsonObject.get("summary"));
                     String rating = String.valueOf(jsonObject.getJSONObject("rating").get("average"));
 
-                    logger.info(title);
                     movie.setRating(empty(rating));
                     movie.setTags(merge(tags));
                     movie.setCountries(arry(country));
@@ -142,7 +140,7 @@ public class MovieService {
                     movie.setTrailerType(1);
                     movie.setDetailsId(detailsId);
                     movie.setLasttime(String.valueOf(new Date()));
-                    logger.info(String.valueOf(new Date()));
+
 
                     if ("movie".equals(mediaType)) {
                         movie.setMedia(Media.movie);
@@ -153,11 +151,16 @@ public class MovieService {
                     }
                     movieDao.updateMovie(movie);
 
+                    logger.info(title+detailsId);
+
+                }else {
+                    logger.error("NOT IN DOUBAN");
+                    return;
                 }
             } catch (Exception e) {
                 e.printStackTrace();
             }
-
+        }
     }
 
     private static Double empty(String rating){
@@ -174,6 +177,10 @@ public class MovieService {
 
     private static String arry(JSONArray array1) throws JSONException {
         String array2;
+        if(null == array1){
+           array2 = "";
+           return array2;
+        }
         List<String> list = new ArrayList<>();
         for (int i = 0; i < array1.length(); i++) {
             array2 = (String) array1.get(i);
