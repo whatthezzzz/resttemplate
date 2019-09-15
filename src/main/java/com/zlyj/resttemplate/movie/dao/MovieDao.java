@@ -73,6 +73,17 @@ public class MovieDao {
         //更新查询返回结果集的所有
         // mongoTemplate.updateMulti(query,update,Movie.class);
     }
+    /**
+     * 记录错误影片
+     */
+    public void noteMovie(Movie movie){
+        Query query = new Query(Criteria.where("detailsId").is(movie.getDetailsId()));
+
+        Update update = new Update().set("lastModifiedTime",movie.getLasttime());
+
+        mongoTemplate.updateFirst(query,update,Movie.class);
+    }
+
 
     /**
      * 查詢出所有detailsId
