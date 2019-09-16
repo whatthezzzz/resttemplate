@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class TopMovieDetailsId  {
+public class TopMovieDetailsIdUtil {
 
     public List<String> Test2() throws IOException {
 

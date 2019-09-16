@@ -7,15 +7,14 @@ import com.zlyj.resttemplate.movie.config.MediaAssetId;
 import lombok.Data;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-
 import javax.validation.constraints.NotNull;
 import java.util.LinkedList;
 import java.util.List;
 
 @Data
-@Document(collection = "t_std_media_asset")
+@Document(collection = "t_std_media_asset_top")
 @JsonInclude(JsonInclude.Include.ALWAYS)
-public class Movie extends BaseMongoEntity {
+public class TopMovie extends BaseMongoEntity {
 
         /**
          * 名称
@@ -150,8 +149,6 @@ public class Movie extends BaseMongoEntity {
         List<MediaAssetId> providerAssets = new LinkedList<>();
 
         private String lasttime;
-
-        private Boolean check;
 
 }
 

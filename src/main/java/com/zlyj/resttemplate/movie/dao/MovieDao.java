@@ -2,6 +2,7 @@ package com.zlyj.resttemplate.movie.dao;
 
 import com.zlyj.resttemplate.movie.entity.DetailsId;
 import com.zlyj.resttemplate.movie.entity.Movie;
+import com.zlyj.resttemplate.movie.entity.TopMovie;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.*;
@@ -11,6 +12,7 @@ import org.springframework.util.CollectionUtils;
 
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Repository
@@ -58,8 +60,8 @@ public class MovieDao {
 
         return mongoTemplate.findOne(query,Movie.class);
 
-
     }
+
 
     /**
      * 更新对象
@@ -67,19 +69,19 @@ public class MovieDao {
     public void updateMovie(Movie movie) {
 
         Query query=new Query(Criteria.where("detailsId").is(movie.getDetailsId()));
-        Update update= new Update().set("casts", movie.getCasts()).set("title",movie.getTitle() ).set("summary",movie.getSummary()).set("rating",movie.getRating()).set("year",movie.getYear()).set("genres",movie.getGenres()).set("directors",movie.getDirectors()).set("trailerType",movie.getTrailerType()).set("countries",movie.getCountries()).set("tags",movie.getTags()).set("mediaType",movie.getMedia()).set("trailerType",movie.getTrailerType()).set("providerAssets",movie.getProviderAssets()).set("lastModifiedTime",movie.getLasttime());
+        Update update= new Update().set("casts", movie.getCasts()).set("title",movie.getTitle() ).set("summary",movie.getSummary()).set("rating",movie.getRating()).set("year",movie.getYear()).set("genres",movie.getGenres()).set("directors",movie.getDirectors()).set("trailerType",movie.getTrailerType()).set("countries",movie.getCountries()).set("tags",movie.getTags()).set("mediaType",movie.getMedia()).set("trailerType",movie.getTrailerType()).set("providerAssets",movie.getProviderAssets()).set("lastModifiedTime",movie.getLasttime()).set("check",movie.getCheck());
         //更新查询返回结果集的第一条
         mongoTemplate.updateFirst(query,update,Movie.class);
         //更新查询返回结果集的所有
         // mongoTemplate.updateMulti(query,update,Movie.class);
     }
     /**
-     * 记录错误影片
+     * 最后一次修改时间
      */
     public void noteMovie(Movie movie){
         Query query = new Query(Criteria.where("detailsId").is(movie.getDetailsId()));
 
-        Update update = new Update().set("lastModifiedTime",movie.getLasttime());
+        Update update = new Update().set("lastModifiedTime",movie.getLasttime()).set("check",movie.getCheck());
 
         mongoTemplate.updateFirst(query,update,Movie.class);
     }

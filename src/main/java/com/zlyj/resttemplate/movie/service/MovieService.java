@@ -12,13 +12,17 @@ import com.zlyj.resttemplate.movie.dao.MovieDao;
 import com.zlyj.resttemplate.movie.entity.DetailsId;
 import com.zlyj.resttemplate.movie.entity.Movie;
 
-import com.zlyj.resttemplate.movie.util.TopMovieDetailsId;
+import com.zlyj.resttemplate.movie.entity.TopMovie;
+import com.zlyj.resttemplate.movie.util.TopMovieDetailsIdUtil;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
@@ -39,7 +43,8 @@ public class MovieService {
 
     RestTemplate template = new RestTemplate();
 
-
+    @Autowired
+    private MongoTemplate mongoTemplate;
 
     @Autowired
     private MovieDao movieDao;
@@ -63,17 +68,48 @@ public class MovieService {
     public Movie findMovieBydetailsId(String detailsId) {
         return movieDao.findMovieBydetailsId(detailsId);
     }
+
+
+
     /**
      * 豆瓣TOP250
      * @return
      */
-    public void top250Movie() throws IOException {
-        List<String>detailsId = new ArrayList<>();
+    public void top250Movie() {
+    try {
 
-        TopMovieDetailsId topMovieDetailsId = new TopMovieDetailsId();
 
-        detailsId = topMovieDetailsId.Test2();
+    TopMovieDetailsIdUtil topMovieDetailsIdUtil = new TopMovieDetailsIdUtil();
 
+    List<String> detailsId = topMovieDetailsIdUtil.Test2();
+
+    for(String d:detailsId){
+        Query query=new Query(Criteria.where("detailsId").is(d));
+        try {
+
+                Movie mgt = mongoTemplate.findOne(query, Movie.class);
+                TopMovie movie = new TopMovie();
+                movie.setProviderAssets(mgt.getProviderAssets());
+                movie.setRating(mgt.getRating());
+                movie.setTags(mgt.getTags());
+                movie.setCountries(mgt.getCountries());
+                movie.setGenres(mgt.getGenres());
+                movie.setDirectors(mgt.getDirectors());
+                movie.setCasts(mgt.getCasts());
+                movie.setSummary(mgt.getSummary());
+                movie.setTitle(mgt.getTitle());
+                movie.setYear(mgt.getYear());
+                movie.setTrailerType(1);
+                movie.setDetailsId(d);
+                movie.setLasttime(String.valueOf(new Date()));
+                mongoTemplate.save(movie);
+            }catch (Exception e){
+                logger.error(d);
+            }
+        }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
 
@@ -89,7 +125,7 @@ public class MovieService {
 
 //              String detailsId = "26100958";
 //              String detailsId = "30206924 ";
-
+//              String detailsId = "4301280";
                 response.setCharacterEncoding("UTF-8");
                 response.setContentType("text/html;charset=UTF-8");
                 Movie movie = new Movie();
@@ -162,6 +198,7 @@ public class MovieService {
                             movie.setTrailerType(1);
                             movie.setDetailsId(detailsId);
                             movie.setLasttime(String.valueOf(new Date()));
+                            movie.setCheck(true);
 
 
                             if ("movie".equals(mediaType)) {
@@ -174,9 +211,10 @@ public class MovieService {
 
                             movieDao.updateMovie(movie);
 
-                            logger.info(title + "   " + detailsId);
+//                            logger.info(title + "   " + detailsId);
 
                         } else {
+
                             logger.error("此影片不来自豆瓣：" + detailsId);
 
                         }
@@ -187,10 +225,13 @@ public class MovieService {
                 } catch (Exception e) {
                     movie.setDetailsId(detailsId);
                     movie.setLasttime(String.valueOf(new Date()));
+                    movie.setCheck(false);
                     movieDao.noteMovie(movie);
                     logger.error("此影片在豆瓣不存在：" + detailsId);
+
                 }
             }
+            logger.info("完事");
     }
 
     private static List<MediaAssetId> MediaAsset(String array1) {

@@ -4,7 +4,7 @@ import com.digidite.core.exception.BusinessException;
 import com.digidite.core.model.Response;
 import com.zlyj.resttemplate.movie.service.MovieService;
 
-import com.zlyj.resttemplate.movie.util.ApiErrorCode;
+import com.zlyj.resttemplate.movie.util.ApiErrorCodeUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.stereotype.Controller;
@@ -28,7 +28,7 @@ private MovieService movieService;
      return Response.success("success");
  } catch (Exception e) {
      e.printStackTrace();
-     return Response.fail(new BusinessException(ApiErrorCode.OPERATION_ERROR));
+     return Response.fail(new BusinessException(ApiErrorCodeUtil.OPERATION_ERROR));
  }
     }
 
@@ -40,7 +40,7 @@ private MovieService movieService;
             return Response.success("niupi");
         } catch (Exception e) {
             e.printStackTrace();
-            return Response.fail(new BusinessException(ApiErrorCode.OPERATION_ERROR));
+            return Response.fail(new BusinessException(ApiErrorCodeUtil.OPERATION_ERROR));
         }
     }
 

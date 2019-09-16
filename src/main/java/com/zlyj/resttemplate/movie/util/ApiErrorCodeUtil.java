@@ -2,7 +2,7 @@ package com.zlyj.resttemplate.movie.util;
 
 import com.digidite.core.exception.ErrorCode;
 
-public enum ApiErrorCode implements ErrorCode {
+public enum ApiErrorCodeUtil implements ErrorCode {
 
     MEETING_ROOM_EXIST("10001", "该会议室已经存在"),
     TIME_ERROR("10002", "输入时间有误"),
@@ -41,7 +41,7 @@ public enum ApiErrorCode implements ErrorCode {
     private String code;
     private String message;
 
-    ApiErrorCode(String code, String message) {
+    ApiErrorCodeUtil(String code, String message) {
         this.code = code;
         this.message = message;
     }
