@@ -8,7 +8,7 @@ import com.zlyj.resttemplate.movie.config.MediaAssetId;
 import com.zlyj.resttemplate.movie.config.Tag;
 import com.zlyj.resttemplate.movie.controller.MovieController;
 import com.zlyj.resttemplate.movie.dao.MovieDao;
-import com.zlyj.resttemplate.movie.entity.DetailsId;
+
 import com.zlyj.resttemplate.movie.entity.Movie;
 
 import org.json.JSONArray;
@@ -24,7 +24,9 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
 import javax.servlet.http.HttpServletResponse;
+import java.io.PrintStream;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -68,13 +70,13 @@ public class MovieService {
      * @return
      */
     public void UpdateMovie(String apikey,HttpServletResponse response) {
-        List<DetailsId>list = movieDao.findAllDetailsId();
+//        List<DetailsId>list = movieDao.findAllDetailsId();
+//
+//            for (DetailsId d : list) {
+//                String detailsId = d.getDetailsId();
 
-            for (DetailsId d : list) {
-
-                String detailsId = d.getDetailsId();
-//            String detailsId = "26100958";
-
+              String detailsId = "26100958";
+//              String detailsId = "30206924 ";
 
                 response.setCharacterEncoding("UTF-8");
                 response.setContentType("text/html;charset=UTF-8");
@@ -164,7 +166,7 @@ public class MovieService {
 
 
                         } else {
-                            logger.error("此影片不来自豆瓣："+detailsId);
+                            logger.error("此影片不来自豆瓣：" + detailsId);
 
                         }
 
@@ -175,28 +177,37 @@ public class MovieService {
                     movie.setDetailsId(detailsId);
                     movie.setLasttime(String.valueOf(new Date()));
                     movieDao.noteMovie(movie);
-                    logger.error("此影片在豆瓣不存在："+detailsId);
+                    logger.error("此影片在豆瓣不存在：" + detailsId);
                 }
-            }
+
     }
 
     private static List<MediaAssetId> MediaAsset(String array1) {
 
         com.alibaba.fastjson.JSONArray jsonarray = com.alibaba.fastjson.JSONArray.parseArray(array1);
         List<MediaAssetId> mediaAssetIds = new ArrayList<>();
-        MediaAssetId mediaAssetId = new MediaAssetId();
+
+
         for (int q = 0; q < jsonarray.size(); q++) {
+            MediaAssetId mediaAssetId = new MediaAssetId();
 
             com.alibaba.fastjson.JSONObject jsonObj = jsonarray.getJSONObject(q);
 
             com.alibaba.fastjson.JSONObject source = (com.alibaba.fastjson.JSONObject) jsonObj.get("source");
 
             String literal = source.getString("literal");
-            mediaAssetId.setAssetProvider(literal);
+
             String video_id = jsonObj.getString("video_id");
+
+
             mediaAssetId.setAssetId(video_id);
+            mediaAssetId.setAssetProvider(literal);
+
             mediaAssetIds.add(mediaAssetId);
+
         }
+
+
         return mediaAssetIds;
     }
 
