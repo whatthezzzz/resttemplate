@@ -9,8 +9,10 @@ import com.zlyj.resttemplate.movie.config.Tag;
 import com.zlyj.resttemplate.movie.controller.MovieController;
 import com.zlyj.resttemplate.movie.dao.MovieDao;
 
+import com.zlyj.resttemplate.movie.entity.DetailsId;
 import com.zlyj.resttemplate.movie.entity.Movie;
 
+import com.zlyj.resttemplate.movie.util.TopMovieDetailsId;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -24,15 +26,13 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
 import javax.servlet.http.HttpServletResponse;
-import java.io.PrintStream;
+import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
 @Service
 public class MovieService {
-
 
 
     private static final Logger logger = LoggerFactory.getLogger(MovieController.class);
@@ -63,19 +63,31 @@ public class MovieService {
     public Movie findMovieBydetailsId(String detailsId) {
         return movieDao.findMovieBydetailsId(detailsId);
     }
+    /**
+     * 豆瓣TOP250
+     * @return
+     */
+    public void top250Movie() throws IOException {
+        List<String>detailsId = new ArrayList<>();
+
+        TopMovieDetailsId topMovieDetailsId = new TopMovieDetailsId();
+
+        detailsId = topMovieDetailsId.Test2();
+
+    }
 
 
     /**
      * 更新数据
      * @return
      */
-    public void UpdateMovie(String apikey,HttpServletResponse response) {
-//        List<DetailsId>list = movieDao.findAllDetailsId();
-//
-//            for (DetailsId d : list) {
-//                String detailsId = d.getDetailsId();
+    public void updateMovie(String apikey,HttpServletResponse response) {
+        List<DetailsId>list = movieDao.findAllDetailsId();
 
-              String detailsId = "26100958";
+            for (DetailsId d : list) {
+                String detailsId = d.getDetailsId();
+
+//              String detailsId = "26100958";
 //              String detailsId = "30206924 ";
 
                 response.setCharacterEncoding("UTF-8");
@@ -164,7 +176,6 @@ public class MovieService {
 
                             logger.info(title + "   " + detailsId);
 
-
                         } else {
                             logger.error("此影片不来自豆瓣：" + detailsId);
 
@@ -179,7 +190,7 @@ public class MovieService {
                     movieDao.noteMovie(movie);
                     logger.error("此影片在豆瓣不存在：" + detailsId);
                 }
-
+            }
     }
 
     private static List<MediaAssetId> MediaAsset(String array1) {

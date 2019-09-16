@@ -20,14 +20,11 @@ public class MovieController {
 @Autowired
 private MovieService movieService;
 
-    /**
-     * 更新
-     * @return
-     */
+
     @RequestMapping(value = "/update", method = RequestMethod.POST)
-    public Response doPost3(String apikey , HttpServletResponse response) {
+    public Response update(String apikey , HttpServletResponse response) {
  try {
-     movieService.UpdateMovie(apikey, response);
+     movieService.updateMovie(apikey, response);
      return Response.success("success");
  } catch (Exception e) {
      e.printStackTrace();
@@ -36,8 +33,20 @@ private MovieService movieService;
     }
 
 
+    @RequestMapping(value = "/top",method = RequestMethod.POST)
+    public Response top() {
+        try {
+            movieService.top250Movie();
+            return Response.success("niupi");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Response.fail(new BusinessException(ApiErrorCode.OPERATION_ERROR));
+        }
+    }
+
+
     @RequestMapping(value = "/query", method = RequestMethod.POST)
-    public void doPost3(String detailsId ) {
+    public void doPost4(String detailsId ) {
         try {
            movieService.findMovieBydetailsId(detailsId);
 
