@@ -22,9 +22,9 @@ private MovieService movieService;
 
 
     @RequestMapping(value = "/update", method = RequestMethod.POST)
-    public Response update(String apikey , HttpServletResponse response) {
+    public Response update(String apikey) {
  try {
-     movieService.updateMovie(apikey, response);
+     movieService.updateMovie(apikey);
      return Response.success("success");
  } catch (Exception e) {
      e.printStackTrace();
@@ -34,9 +34,9 @@ private MovieService movieService;
 
 
     @RequestMapping(value = "/top",method = RequestMethod.POST)
-    public Response top() {
+    public Response top(String apikey) {
         try {
-            movieService.top250Movie();
+            movieService.top250Movie(apikey);
             return Response.success("niupi");
         } catch (Exception e) {
             e.printStackTrace();

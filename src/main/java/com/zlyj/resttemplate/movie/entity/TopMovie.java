@@ -12,7 +12,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 @Data
-@Document(collection = "t_std_media_asset_top")
+@Document(collection = "t_std_media_top")
 @JsonInclude(JsonInclude.Include.ALWAYS)
 public class TopMovie extends BaseMongoEntity {
 

@@ -12,7 +12,6 @@ import org.springframework.util.CollectionUtils;
 
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 @Repository
@@ -93,9 +92,33 @@ public class MovieDao {
     public List<DetailsId> findAllDetailsId(){
 
         return mongoTemplate.findAll(DetailsId.class);
+    }
 
+    /**
+     * 新增topMovie
+     */
+    public void addTopMovie(TopMovie topMovie){
+        Query query = new Query(Criteria.where("detailsId").is(topMovie.getDetailsId()));
+        TopMovie tm = mongoTemplate.findOne(query,TopMovie.class);
+       if (null == tm){
+          mongoTemplate.save(topMovie);
+       }else {
+           return;
+       }
     }
 
 
+    /**
+     * 新增Movie
+     */
+    public void addMovie(Movie movie){
+        Query query = new Query(Criteria.where("detailsId").is(movie.getDetailsId()));
+        Movie mov = mongoTemplate.findOne(query,Movie.class);
+        if(null == mov){
+            mongoTemplate.save(movie);
+        }else {
+            return;
+        }
+    }
 
 }
