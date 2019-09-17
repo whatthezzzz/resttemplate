@@ -150,5 +150,6 @@ public class TopMovie extends BaseMongoEntity {
 
         private String lasttime;
 
+        private Boolean check;
 }
 

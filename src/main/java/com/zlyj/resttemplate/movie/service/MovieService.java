@@ -102,19 +102,8 @@ public class MovieService {
                 }
             }
             if (null !=erroId) {
-                List<DetailsId> detailsIdList = new ArrayList<>();
-
-                for (String e : erroId) {
-                    DetailsId d = null;
-
-                    d.setDetailsId(e);
-
-                    detailsIdList.add(d);
-                }
-
-                System.out.println(detailsIdList);
-
-//                jobs.updateMovie(apikey, detailsIdList);
+                System.out.println(erroId );
+                jobs.updateTopMovie(apikey,erroId);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -130,9 +119,9 @@ public class MovieService {
      */
     public void updateMovie(String apikey) {
 
-//        List<DetailsId> list = movieDao.findAllDetailsId();
+        List<DetailsId> list = movieDao.findAllDetailsId();
 
-        jobs.updateMovie(apikey);
+        jobs.updateMovie(apikey,list);
 
     }
 }
