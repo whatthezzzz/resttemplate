@@ -4,6 +4,7 @@ import com.zlyj.resttemplate.movie.controller.MovieController;
 import com.zlyj.resttemplate.movie.dao.MovieDao;
 
 import com.zlyj.resttemplate.movie.entity.DetailsId;
+import com.zlyj.resttemplate.movie.entity.HotMovie;
 import com.zlyj.resttemplate.movie.entity.Movie;
 
 import com.zlyj.resttemplate.movie.entity.TopMovie;
@@ -40,16 +41,6 @@ public class MovieService {
 
 
     /**
-     * 根据电影名查找对象
-     *
-     * @param title
-     * @return
-     */
-    public Movie findMovieByName(String title) {
-        return movieDao.findMovieByName(title);
-    }
-
-    /**
      * 根据detailsId查找对象
      *
      * @param detailsId
@@ -70,7 +61,7 @@ public class MovieService {
         try {
 
             TopMovieDetailsIdUtil topMovieDetailsIdUtil = new TopMovieDetailsIdUtil();
-            List<String> detailsId = topMovieDetailsIdUtil.Test2();
+            List<String> detailsId = topMovieDetailsIdUtil.reptile();
 
             for (String d : detailsId) {
                 Query query = new Query(Criteria.where("detailsId").is(d));
@@ -114,14 +105,64 @@ public class MovieService {
 
     /**
      * 更新数据
-     *
      * @return
      */
     public void updateMovie(String apikey) {
-
+    try {
         List<DetailsId> list = movieDao.findAllDetailsId();
 
         jobs.updateMovie(apikey,list);
+    }catch (Exception e){
+        e.printStackTrace();
+        }
+    }
+
+    /**
+     * 热门电影
+     * @return
+     */
+    public void hotMovie(String apikey) {
+
+        List<String> detailsId = jobs.queryHotMovie(apikey);
+
+        for (String d : detailsId) {
+            Query query = new Query(Criteria.where("detailsId").is(d));
+
+            try {
+                Movie mgt = mongoTemplate.findOne(query, Movie.class);
+
+                HotMovie hotMovie = new HotMovie();
+
+                hotMovie.setProviderAssets(mgt.getProviderAssets());
+                hotMovie.setRating(mgt.getRating());
+                hotMovie.setTags(mgt.getTags());
+                hotMovie.setCountries(mgt.getCountries());
+                hotMovie.setGenres(mgt.getGenres());
+                hotMovie.setDirectors(mgt.getDirectors());
+                hotMovie.setCasts(mgt.getCasts());
+                hotMovie.setSummary(mgt.getSummary());
+                hotMovie.setTitle(mgt.getTitle());
+                hotMovie.setYear(mgt.getYear());
+                hotMovie.setTrailerType(1);
+                hotMovie.setDetailsId(d);
+                hotMovie.setDetailsSource(1);
+                hotMovie.setLasttime(String.valueOf(new Date()));
+
+                movieDao.addHotMovie(hotMovie);
+
+                logger.info(hotMovie.getTitle()+"   "+hotMovie.getDetailsId());
+
+            } catch (Exception e) {
+                e.printStackTrace();
+                logger.error(d);
+
+            }
+
+        }
+
 
     }
+
+
+
 }

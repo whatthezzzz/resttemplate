@@ -7,6 +7,7 @@ import com.zlyj.resttemplate.movie.config.Tag;
 import com.zlyj.resttemplate.movie.controller.MovieController;
 import com.zlyj.resttemplate.movie.dao.MovieDao;
 import com.zlyj.resttemplate.movie.entity.DetailsId;
+import com.zlyj.resttemplate.movie.entity.HotMovie;
 import com.zlyj.resttemplate.movie.entity.Movie;
 import com.zlyj.resttemplate.movie.entity.TopMovie;
 import org.json.JSONArray;
@@ -15,7 +16,6 @@ import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -46,10 +46,10 @@ public class MovieQueryJobs {
         for (DetailsId d : list) {
             String detailsId = d.getDetailsId();
 
-//              String detailsId = "26100958";
-//              String detailsId = "30206924 ";
-//              String detailsId = "4301280";
-
+//              String detailsId = "26100958";   //复联4
+//              String detailsId = "30206924 ";   //亿万
+//              String detailsId = "4301280";    //数据库不存在的电影
+//                String detailsId = "25779217";   //诛仙
             Movie movie = new Movie();
 
             String url = "http://api.douban.com/v2/movie/" + detailsId;
@@ -94,59 +94,58 @@ public class MovieQueryJobs {
 
                     JSONArray year = (JSONArray) jsonObject.getJSONObject("attrs").get("year");
 
-                    Integer detailsSource = movieDao.findMovieBydetailsId(detailsId).getDetailsSource();
-
 //                if (!arry(year).equals("2019") || arry(year).isEmpty() || null == arry(year) || detailsSource != 1) {
 //                    logger.error("NOT FOUND ON 2019 DOUBAN");
 //                    return;
 //                }
+                    JSONArray cast = (JSONArray) jsonObject.getJSONObject("attrs").opt("cast");
+                    JSONArray directors = (JSONArray) jsonObject.getJSONObject("attrs").opt("director");
+                    JSONArray genres = (JSONArray) jsonObject.getJSONObject("attrs").opt("movie_type");
+                    JSONArray country = (JSONArray) jsonObject.getJSONObject("attrs").opt("country");
+                    String video = String.valueOf(jsonObject2.get("videos"));
+                    String tags = String.valueOf(jsonObject.getJSONArray("tags"));
+                    String mediaType = String.valueOf(jsonObject2.get("subtype"));
+                    String title = String.valueOf(jsonObject2.get("title"));
+                    String summary = String.valueOf(jsonObject.get("summary"));
+                    String rating = String.valueOf(jsonObject.getJSONObject("rating").get("average"));
 
-                    if (1 == detailsSource) {
-                        JSONArray cast = (JSONArray) jsonObject.getJSONObject("attrs").opt("cast");
-                        JSONArray directors = (JSONArray) jsonObject.getJSONObject("attrs").opt("director");
-                        JSONArray genres = (JSONArray) jsonObject.getJSONObject("attrs").opt("movie_type");
-                        JSONArray country = (JSONArray) jsonObject.getJSONObject("attrs").opt("country");
-                        String video = String.valueOf(jsonObject2.get("videos"));
-                        String tags = String.valueOf(jsonObject.getJSONArray("tags"));
-                        String mediaType = String.valueOf(jsonObject2.get("subtype"));
-                        String title = String.valueOf(jsonObject2.get("title"));
-                        String summary = String.valueOf(jsonObject.get("summary"));
-                        String rating = String.valueOf(jsonObject.getJSONObject("rating").get("average"));
-
-                        movie.setProviderAssets(MediaAsset(video));
-                        movie.setRating(empty(rating));
-                        movie.setTags(merge(tags));
-                        movie.setCountries(arry(country));
-                        movie.setGenres(arry(genres));
-                        movie.setDirectors(arry(directors));
-                        movie.setCasts(arry(cast));
-                        movie.setSummary(summary);
-                        movie.setTitle(title);
-                        movie.setYear(arry(year));
-                        movie.setTrailerType(1);
-                        movie.setDetailsId(detailsId);
-                        movie.setLasttime(String.valueOf(new Date()));
-                        movie.setCheck(true);
+                    movie.setProviderAssets(MediaAsset(video));
+                    movie.setRating(empty(rating));
+                    movie.setTags(merge(tags));
+                    movie.setCountries(arry(country));
+                    movie.setGenres(arry(genres));
+                    movie.setDirectors(arry(directors));
+                    movie.setCasts(arry(cast));
+                    movie.setSummary(summary);
+                    movie.setTitle(title);
+                    movie.setYear(arry(year));
+                    movie.setTrailerType(1);
+                    movie.setDetailsId(detailsId);
+                    movie.setLasttime(String.valueOf(new Date()));
+                    movie.setCheck(true);
 
 
-                        if ("movie".equals(mediaType)) {
-                            movie.setMedia(Media.movie);
-                        } else if (movie.getTags().contains("综艺") || movie.getTags().contains("真人秀")) {
-                            movie.setMedia(Media.show);
-                        } else {
-                            movie.setMedia(Media.series);
-                        }
-
-
-                        movieDao.updateMovie(movie);
-
-                        logger.info(title + "   " + detailsId);
-
+                    if ("movie".equals(mediaType)) {
+                        movie.setMedia(Media.movie);
+                    } else if (movie.getTags().contains("综艺") || movie.getTags().contains("真人秀")) {
+                        movie.setMedia(Media.show);
                     } else {
-
-                        logger.error("此影片不来自豆瓣：" + detailsId);
-
+                        movie.setMedia(Media.series);
                     }
+
+                    movieDao.addMovie(movie);
+
+                    Integer detailsSource = movieDao.findMovieBydetailsId(detailsId).getDetailsSource();
+                    if (1 == detailsSource) {
+                        movieDao.updateMovie(movie);
+                    } else {
+                        logger.error("此影片不是来自豆瓣： " + detailsId);
+                    }
+
+
+                    logger.info(title + "   " + detailsId);
+
+
 
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -160,9 +159,12 @@ public class MovieQueryJobs {
 
             }
 
+        }
         logger.info("完事");
+
    }
-    }
+
+
 
 
     public void updateTopMovie(String apikey,List<String>erroId){
@@ -201,9 +203,7 @@ public class MovieQueryJobs {
 
                     JSONObject jsonObject2 = new JSONObject(JSONTokener(res2));
 
-                    JSONArray year = (JSONArray) jsonObject.getJSONObject("attrs").get("year");
-
-
+                        JSONArray year = (JSONArray) jsonObject.getJSONObject("attrs").get("year");
                         JSONArray cast = (JSONArray) jsonObject.getJSONObject("attrs").opt("cast");
                         JSONArray directors = (JSONArray) jsonObject.getJSONObject("attrs").opt("director");
                         JSONArray genres = (JSONArray) jsonObject.getJSONObject("attrs").opt("movie_type");
@@ -256,7 +256,7 @@ public class MovieQueryJobs {
                         topMovie.setDetailsSource(1);
                         topMovie.setCheck(true);
 
-                       movieDao.addTopMovie(topMovie);
+                        movieDao.addTopMovie(topMovie);
 
                         logger.info("top250movie新增: "+title + "   " + d);
 
@@ -274,10 +274,105 @@ public class MovieQueryJobs {
 
         }
         logger.info("完事");
+
+    }
+
+
+    public List<String> queryHotMovie(String apikey){
+
+        String url = "https://api.douban.com/v2/movie/in_theaters";
+
+        MultiValueMap<String, Object> paramMap = new LinkedMultiValueMap<String, Object>();
+
+        paramMap.add("apikey", apikey);
+
+        HttpHeaders headers = new HttpHeaders();
+
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        HttpEntity<MultiValueMap<String, Object>> request = new HttpEntity<MultiValueMap<String, Object>>(paramMap, headers);
+
+        List<DetailsId>dlist = new ArrayList<>();
+
+        List<String>list = new ArrayList<>();
+        try{
+            ResponseEntity<String> entity = template.postForEntity(url, request, String.class);
+
+            String res = entity.getBody();
+
+            JSONObject jsonObject1 = new JSONObject(JSONTokener(res));
+
+            Integer total = (Integer) jsonObject1.get("total");
+
+            Integer count = 1;
+
+           DetailsId detailsId = new DetailsId();
+
+
+            for (int start =0;start<total;start++){
+
+                try {
+                    MultiValueMap<String, Object> map = new LinkedMultiValueMap<String, Object>();
+
+                    map.add("start", start);
+
+                    map.add("count", count);
+
+                    map.add("apikey", apikey);
+
+                    request = new HttpEntity<MultiValueMap<String, Object>>(map, headers);
+
+                    ResponseEntity<String> entityhot = template.postForEntity(url, request, String.class);
+
+                    String eh = entityhot.getBody();
+
+                    JSONObject jsonObject2 = new JSONObject(JSONTokener(eh));
+
+                    JSONArray sub = jsonObject2.getJSONArray("subjects");
+
+                    detailsId = HotMovieDetailsId(sub);
+
+                    dlist.add(detailsId);
+
+                }catch (Exception e){
+                    e.printStackTrace();
+                    logger.error("此影片在获取时发生了错误： "+detailsId);
+                }
+            }
+
+            updateMovie(apikey,dlist);
+
+
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        logger.info("完事");
+
+        for (DetailsId d:dlist){
+            String detailsId = d.getDetailsId();
+
+            list.add(detailsId);
+        }
+        return list;
     }
 
 
 
+
+
+    private static DetailsId HotMovieDetailsId(JSONArray sub) throws JSONException {
+        DetailsId detailsId = new DetailsId();
+        for (int i = 0;i<sub.length();i++){
+
+            JSONObject jsonObject = sub.getJSONObject(i);
+
+            String d = (String) jsonObject.get("id");
+
+            detailsId.setDetailsId(d);
+        }
+
+        return detailsId;
+    }
 
     private static List<MediaAssetId> MediaAsset(String array1) {
         com.alibaba.fastjson.JSONArray jsonarray = com.alibaba.fastjson.JSONArray.parseArray(array1);

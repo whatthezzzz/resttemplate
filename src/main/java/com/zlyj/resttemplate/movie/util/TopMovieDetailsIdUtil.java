@@ -14,7 +14,7 @@ import java.util.regex.Pattern;
 
 public class TopMovieDetailsIdUtil {
 
-    public List<String> Test2() throws IOException {
+    public List<String> reptile() throws IOException {
 
         String s1 = "https://movie.douban.com/top250?start=";
         String s2 = "&filter=";

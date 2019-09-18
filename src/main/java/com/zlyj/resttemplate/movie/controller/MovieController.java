@@ -40,6 +40,17 @@ private MovieService movieService;
             return Response.success("niupi");
         } catch (Exception e) {
             e.printStackTrace();
+            return Response.fail(new BusinessException(ApiErrorCodeUtil.GG_ERROR));
+        }
+    }
+
+    @RequestMapping(value = "/hot",method = RequestMethod.POST)
+    public Response hot(String apikey) {
+        try {
+            movieService.hotMovie(apikey);
+            return Response.success("diao");
+        } catch (Exception e) {
+            e.printStackTrace();
             return Response.fail(new BusinessException(ApiErrorCodeUtil.OPERATION_ERROR));
         }
     }
